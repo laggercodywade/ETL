@@ -43,8 +43,7 @@ engine = create_engine(db_url)
 trainning_hour_df = pd.read_sql_table('training_hours',engine)
 
 2. Transformation
-Data Cleaning
-Feature Engineering:
+2.1 Enrollies' data
 # Enrollies' data
 enrollies_df.head()
 #Fixing data type
@@ -56,6 +55,7 @@ enrollies_df['gender'] = enrollies_df['gender'].fillna(enrollies_df['gender'].mo
 enrollies_df['gender'] = enrollies_df['gender'].astype('category')
 enrollies_df.info()
 
+2.2 Enrollies education
 # Enrollies education
 enrollies_edu_df.info()
 
@@ -68,4 +68,30 @@ enrollies_edu_df['major_discipline'] = enrollies_edu_df['major_discipline'].fill
 cat_cols= ['enrollied_uninversity','education_level','major_discipline','enrolled_university']
 enrollies_edu_df[cat_cols] = enrollies_edu_df[cat_cols].astype('category')
 
-#Enrollies working
+2.3 Enrollies working 
+# Enrollies working
+working_experience_df.info()
+
+# We will do the same with Enrollies education table
+experience_mode = working_experience_df['experience'].mode()[0]
+working_experience_df['experience'] = working_experience_df['experience'].fillna(experience_mode)
+working_experience_df['company_size'] = working_experience_df['company_size'].fillna('Unknow')
+working_experience_df['company_type'] = working_experience_df['company_type'].fillna('Unknow')
+working_experience_df['last_new_job'] = working_experience_df['last_new_job'].fillna('Unknow')
+
+# Fixing data type
+cat_cols = ['relevent_experience','company_size','company_type','last_new_job']
+working_experience_df[cat_cols] = working_experience_df[cat_cols].astype('category')
+
+3. Load
+
+db = 'data_warehouse.db'
+engine = create_engine('sqlite:///data_warehouse.db')
+
+employment_df.to_sql('Fact_Employment',engine,if_exists='replace',index=False)
+city_development_index_df.to_sql('Dim_City',engine,if_exists='replace',index=False)
+trainning_hour_df.to_sql('Dim_Training_Hours',engine,if_exists='replace',index=False)
+working_experience_df.to_sql('Dim_Working_Experience',engine,if_exists='replace',index=False)
+enrollies_edu_df.to_sql('Dim_Enrollies_Education',engine,if_exists='replace',index=False)
+enrollies_df.to_sql('Dim_Enrollies',engine,if_exists='replace',index=False)
+
