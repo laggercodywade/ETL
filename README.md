@@ -41,9 +41,10 @@ from sqlalchemy import create_engine
 db_url= 'mysql+pymysql://etl_practice:550814@112.213.86.31:3360/company_course'
 engine = create_engine(db_url)
 trainning_hour_df = pd.read_sql_table('training_hours',engine)
-
-2. Transformation
-2.1 Enrollies' data
+```
+### 2. Transformation
+#### 2.1 Enrollies' data
+``` python
 # Enrollies' data
 enrollies_df.head()
 #Fixing data type
@@ -82,9 +83,9 @@ working_experience_df['last_new_job'] = working_experience_df['last_new_job'].fi
 # Fixing data type
 cat_cols = ['relevent_experience','company_size','company_type','last_new_job']
 working_experience_df[cat_cols] = working_experience_df[cat_cols].astype('category')
-
-3. Load
-
+```
+#### 3. Load
+``` python
 db = 'data_warehouse.db'
 engine = create_engine('sqlite:///data_warehouse.db')
 
@@ -94,4 +95,4 @@ trainning_hour_df.to_sql('Dim_Training_Hours',engine,if_exists='replace',index=F
 working_experience_df.to_sql('Dim_Working_Experience',engine,if_exists='replace',index=False)
 enrollies_edu_df.to_sql('Dim_Enrollies_Education',engine,if_exists='replace',index=False)
 enrollies_df.to_sql('Dim_Enrollies',engine,if_exists='replace',index=False)
-
+```
